@@ -7,10 +7,10 @@ const buttonVariants = cva(
     {
       variants: {
         variant: {
-          default: "bg-blue text-indigo hover:bg-orange",
+          default: "bg-blue hover:bg-orange",
           destructive: "text-rose-400 bg-white hover:text-white hover:bg-rose-400",
           outline: "border border-indigo hover:bg-accent hover:text-accent-foreground",
-          secondary: "text-indigo bg-peach hover:bg-white",
+          secondary: "bg-peach hover:bg-white",
           ghost: "hover:bg-accent hover:text-accent-foreground", // Ghost has no background until hovered
           link: "underline-offset-4 hover:underline text-primary",
         },

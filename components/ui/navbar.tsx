@@ -54,7 +54,7 @@ export function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="relative px-3 py-2 text-sm font-medium text-indigo hover:text-purple transition-colors duration-300 group"
+                className="relative px-3 py-2 text-sm font-medium hover:text-purple transition-colors duration-300 group"
               >
               <div className="flex items-center gap-3 ml-6">
                 {IconComponent && <IconComponent className="h-6 w-6" />}

@@ -68,7 +68,7 @@ export default function AdminPage() {
               value="items"
               className="space-y-6 data-[state=active]:block"
             >
-              <h1 className="text-xl text-indigo text-center lg:text-end ">
+              <h1 className="text-xl text-center lg:text-end ">
                 مدیریت آیتم‌ها
               </h1>
               <Suspense fallback={<ItemsSkeleton />}>
@@ -81,7 +81,7 @@ export default function AdminPage() {
                 value="users"
                 className="space-y-6 data-[state=active]:block"
               >
-                <h1 className="text-xl font-bold text-indigo text-center lg:text-end ">
+                <h1 className="text-xl font-bold text-center lg:text-end ">
                   مدیریت اکانت‌ها
                 </h1>
                 <Suspense fallback={<UsersSkeleton />}>
@@ -96,7 +96,7 @@ export default function AdminPage() {
                 value="qr"
                 className="space-y-6 data-[state=active]:block"
               >
-                <h1 className="text-xl font-bold text-indigo text-center lg:text-end ">
+                <h1 className="text-xl font-bold text-center lg:text-end ">
                   ایجاد کد کیوآر
                 </h1>
                 <Suspense fallback={<QRCodeSkeleton />}>
