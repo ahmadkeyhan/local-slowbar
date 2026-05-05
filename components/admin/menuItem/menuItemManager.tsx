@@ -543,7 +543,7 @@ export default function MenuItemManager({ isAdmin = true }) {
                                 </Card>
                               ); else return (
                                 <Card key={item._id} className="overflow-hidden bg-white text-indigo">
-                                  <CardContent className="p-0">
+                                  <CardContent className="p-0 bg-peach/20">
                                     <div className="p-4 flex flex-row-reverse gap-2 items-center">
                                       <div className="flex flex-col w-full gap-2">
                                         <div className="flex flex-row-reverse justify-between">

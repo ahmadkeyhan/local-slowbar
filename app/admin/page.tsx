@@ -33,7 +33,7 @@ export default function AdminPage() {
   const isEmployee = session?.user?.role === "employee";
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-peach/20">
       <div className="container px-4 py-6 mx-auto max-w-6xl">
         <Tabs
           defaultValue="items"
@@ -114,7 +114,7 @@ export default function AdminPage() {
 
 function AdminSkeleton() {
   return (
-    <div className="min-h-screen bg-white p-6">
+    <div className="min-h-screen bg-peach/20 p-6">
       <div className="container mx-auto max-w-5xl">
         <div className="flex justify-between items-center mb-8">
           <Skeleton className="h-8 w-40" />

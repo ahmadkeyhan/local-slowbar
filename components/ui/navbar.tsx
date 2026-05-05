@@ -26,9 +26,9 @@ export function Navbar() {
   // const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-50 bg-white">
       {/* Glassmorphism background with futuristic border */}
-      <div className="absolute inset-0 bg-white"></div>
+      <div className="absolute inset-0 bg-peach/20"></div>
 
       {/* Decorative gradient line */}
       <nav className="relative mx-auto flex max-w-7xl h-15 sm:h-18 items-center justify-between p-4">
