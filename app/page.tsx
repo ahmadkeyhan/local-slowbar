@@ -5,13 +5,7 @@ import { LuLoader } from "react-icons/lu";
 export default async function Home() {
 
   return (
-    <main className="min-h-screen bg-white">
-      <div className="container px-2 py-4 mx-auto max-w-3xl">
-        <section className="space-y-4"> 
-          <MenuCategories />
-        </section>
-      </div>
-    </main>
+    <MenuCategories />
   );
 }
 
