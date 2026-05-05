@@ -93,6 +93,10 @@ html {
   color: #762da0;
 }
 
+body {
+  background-color: #fdf5ef;
+}
+
 h1 {
   font-weight: 700;
 }
