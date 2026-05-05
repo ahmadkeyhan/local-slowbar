@@ -1,0 +1,56 @@
+import * as React from "react"
+import { LuEye,LuEyeOff } from "react-icons/lu"
+import { cn } from "@/lib/utils"
+import { useState } from "react"
+import { Button } from "./button"
+
+const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
+  ({ className, type, ...props }, ref) => {
+    const [showPassword,setShowPassWord] = useState(false)
+    if (type !== "password") {
+      return (
+        <input
+          dir="rtl"
+          type={type}
+          className={cn(
+            "flex flex-row-reverse h-10 w-full rounded-md bg-white text-indigo px-3 py-2 text-right text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+            className
+          )}
+          ref={ref}
+          {...props}
+        />
+      )
+    } else {
+      return (
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            className={cn(
+              "flex h-10 w-full rounded-md bg-white text-indigo px-3 py-2 text-right text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+              className
+            )}
+            ref={ref}
+            {...props}
+          />
+          <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="absolute left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+              onClick={() => setShowPassWord(!showPassword)}
+            >
+              {showPassword ? (
+                <LuEyeOff className="h-4 w-4 text-indigo" />
+              ) : (
+                <LuEye className="h-4 w-4 text-indigo" />
+              )}
+              <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+            </Button>
+        </div>
+      )
+    }
+  }
+)
+Input.displayName = "Input"
+
+export { Input }

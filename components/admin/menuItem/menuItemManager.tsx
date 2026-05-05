@@ -1,0 +1,606 @@
+"use client";
+
+import type React from "react";
+import { useState, useEffect, FormEvent } from "react";
+import {
+  LuPlus,
+  LuTrash2,
+  LuSave,
+  LuX,
+  LuChevronDown,
+  LuChevronUp,
+  LuListStart,
+} from "react-icons/lu";
+import { MdEdit } from "react-icons/md";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  getMenuItems,
+  createMenuItem,
+  updateMenuItem,
+  deleteMenuItem,
+  reorderMenuItems,
+} from "@/lib/data/itemData";
+import { getCategories } from "@/lib/data/categoryData";
+import { useToast } from "@/components/ui/toastContext";
+import Image from "next/image";
+import SortableMenuItem from "./sortableMenuItem";
+import AvailabilityToggle from "./availabilityToggle";
+import { formatCurrency } from "@/lib/utils";
+
+interface item {
+  _id: string;
+  name: string;
+  description?: string
+  price: number
+  categoryId: string;
+  order: number;
+  available: boolean;
+}
+
+interface category {
+    _id: string, 
+    name: string,
+    order: number
+}
+
+interface groupedItems {
+  [categoryId: string]: item[];
+}
+
+type FormMenuItem = {
+  name: string;
+  description?: string;
+  price: number;
+  categoryId: string;
+  available: boolean;
+};
+
+export default function MenuItemManager({ isAdmin = true }) {
+  const [items, setItems] = useState<item[]>([]);
+  const [groupedItems, setGroupedItems] = useState<groupedItems>({});
+  const [categories, setCategories] = useState<category[]>([]);
+  const [newItem, setNewItem] = useState<FormMenuItem>({
+    name: "",
+    description: "",
+    price: 0,
+    categoryId: "",
+    available: true,
+  });
+  const [editingId, setEditingId] = useState<string>("");
+  const [editForm, setEditForm] = useState<FormMenuItem>({
+    name: "",
+    description: "",
+    price: 0,
+    categoryId: "",
+    available: true,
+  });
+  const [isReordering, setIsReordering] = useState<string | null>(null);
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set()
+  );
+
+  // Make sure we're destructuring the toast function from useToast
+  const { toast } = useToast();
+
+  // Set up sensors for drag and drop with improved mobile support
+  const sensors = useSensors(
+    // PointerSensor works for both mouse and touch on modern browsers
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        // distance: 8, // 8px movement required before drag starts
+        delay: 100, // Shorter delay for better responsiveness
+        tolerance: 10, // Higher tolerance for Android touch jitter
+      },
+    }),
+    // Add TouchSensor as a fallback for older mobile browsers
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 0, // No delay for Android
+        tolerance: 15, // Higher tolerance for Android touch events
+      },
+    }),
+    // Keep keyboard support for accessibility
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    // Group items by category
+    const grouped: groupedItems = {};
+
+    items.forEach((item) => {
+            
+        if (!grouped[item.categoryId]) {
+          grouped[item.categoryId] = [];
+        }
+        // Only add if not already in this category group
+        if (
+          !grouped[item.categoryId].find(
+            (existingItem) => existingItem._id === item._id
+          )
+        ) {
+          grouped[item.categoryId].push(item);
+        }
+    });
+
+    // Sort items within each category by order
+    Object.keys(grouped).forEach((categoryId) => {
+      grouped[categoryId].sort((a, b) => (a.order || 0) - (b.order || 0));
+    });
+
+    setGroupedItems(grouped);
+
+    // Expand all categories by default
+    if (categories.length > 0) {
+      const newExpanded = new Set<string>();
+      categories.forEach((category) => newExpanded.add(category._id));
+      setExpandedCategories(newExpanded);
+    }
+  }, [items, categories]);
+
+  const loadData = async () => {
+    const [itemsData, categoriesData] = await Promise.all([
+      getMenuItems(),
+      getCategories(),
+    ]);
+    setItems(itemsData);
+    setCategories(categoriesData);
+  };
+
+  const toggleCategory = (categoryId: string) => {
+    const newExpanded = new Set(expandedCategories);
+    if (newExpanded.has(categoryId)) {
+      newExpanded.delete(categoryId);
+    } else {
+      newExpanded.add(categoryId);
+    }
+    setExpandedCategories(newExpanded);
+  };
+
+  const handleCreateSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+        console.log(newItem)
+      await createMenuItem(newItem);
+      setNewItem({
+        name: "",
+        description: "",
+        price: 0,
+        categoryId: "",
+        available: true,
+      });
+      await loadData();
+      toast({
+        title: "آیتم ایجاد شد!",
+        description: `${newItem.name} به منو اضافه شد.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "خطا در ایجاد آیتم!",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEditClick = (item: item) => {
+    setEditingId(item._id);
+    setEditForm({
+      name: item.name,
+      description: item.description || "",
+      price: item.price,
+      categoryId: item.categoryId,
+      available: item.available,
+    });
+  };
+
+  const handleUpdateSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      
+      const formattedItem = {
+        ...editForm,
+        _id: editingId,
+      };
+
+      await updateMenuItem(editingId, formattedItem);
+      setEditingId("");
+      loadData();
+      toast({
+        title: "آیتم به‌روزرسانی شد!",
+        description: `${editForm.name} به‌روزرسانی شد.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "خطا در به‌روزرسانی آیتم!",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteClick = async (id: string, name: string) => {
+    if (window.confirm(`از حذف "${name}" مطمئنید؟`)) {
+      try {
+        const itemToDelete = items.find((item) => item._id === id);
+        await deleteMenuItem(id);
+        loadData();
+        toast({
+          title: "آیتم حذف شد!",
+          description: `${name} از منو حذف شد.`,
+        });
+      } catch (error: any) {
+        toast({
+          title: "خطا در حذف آیتم!",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event
+
+    if (over && active.id !== over.id && isReordering) {
+      try {
+        // Find the category items
+        const categoryItems = groupedItems[isReordering] || []
+
+        // Calculate the new order of items
+        const oldIndex = categoryItems.findIndex((item) => item._id === active.id)
+        const newIndex = categoryItems.findIndex((item) => item._id === over.id)
+
+        // Create the new array with the updated order
+        const updatedItems = arrayMove([...categoryItems], oldIndex, newIndex)
+
+        // Update the local state for immediate feedback
+        const newGroupedItems = { ...groupedItems }
+        newGroupedItems[isReordering] = updatedItems
+        setGroupedItems(newGroupedItems)
+
+        // Update the items array to reflect the new order
+        const newItems = [...items]
+        const itemsToUpdate = newItems.filter((item) => item.categoryId === isReordering)
+
+        // Remove the items from this category
+        const otherItems = newItems.filter((item) => item.categoryId !== isReordering)
+
+        // Create a mapping of id to new order
+        const orderMap = new Map()
+        updatedItems.forEach((item, index) => {
+          if (item._id) {
+            orderMap.set(item._id, index)
+          }
+        })
+
+        // Update the order of the items
+        itemsToUpdate.forEach((item) => {
+          if (item._id && orderMap.has(item._id)) {
+            item.order = orderMap.get(item._id)
+          }
+        })
+
+        // Combine the updated items with the other items
+        setItems([...otherItems, ...itemsToUpdate])
+
+        // Get the ordered IDs from the updated array
+        const orderedIds = updatedItems.map((item) => item._id as string)
+
+        // Save the new order to the database directly
+        await reorderMenuItems(isReordering, orderedIds)
+
+        toast({
+          title: "ترتیب آیتم‌ها تغییر یافت!",
+          description: "",
+        })
+      } catch (error: any) {
+        // If there's an error, reload the original order
+        loadData()
+
+        toast({
+          title: "خطا در تغییر ترتیب آیتم‌ها!",
+          description: error.message || "",
+          variant: "destructive",
+        })
+      } finally {
+        setIsReordering(null)
+      }
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      {isAdmin && (
+        <form onSubmit={handleCreateSubmit} className="space-y-4 p-4 bg-indigo text-white rounded-xl">
+          <div dir="rtl" className="flex justify-between items-center pl-2">
+            <h3 className="font-extrabold">افزودن آیتم‌ جدید</h3>
+          </div>
+          <div dir="rtl" className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <Input
+                placeholder="عنوان آیتم"
+                value={newItem.name}
+                onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <Input
+                placeholder="توضیحات(اختیاری)"
+                value={newItem.description}
+                onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+              />
+            </div>
+            <div>
+                <Input
+                    placeholder="قیمت"
+                    type="number"
+                    step="1"
+                    min="0"
+                    value={newItem.price || 0}
+                    onChange={(e) => setNewItem({ ...newItem, price: Number(e.target.value) })}
+                />
+            </div>
+            <div>
+              <Select
+                value={newItem.categoryId}
+                onValueChange={(value) => setNewItem({ ...newItem, categoryId: value })}
+                required
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="انتخاب دسته‌بندی" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category._id} value={category._id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex">
+            <Button type="submit">
+              <LuPlus className="w-4 h-4" />
+              افزودن آیتم به منو
+            </Button>
+          </div>
+        </form>
+      )}
+
+      <div className="space-y-4">
+        {/* {items.map((item) => ( */}
+        {categories.length === 0 ? (
+          <div className="text-center py-8 text-indigo">
+            <h3>دسته‌بندی‌ای موجود نیست! ابتدا یک دسته‌بندی ایجاد کنید.</h3>
+          </div>
+        ) : (
+          categories.map((category) => {
+            const categoryItems = groupedItems[category._id] || []
+            const isExpanded = expandedCategories.has(category._id)
+
+            return (
+              <Card key={category._id} className="overflow-hidden">
+                <CardHeader className="py-3 px-4 cursor-pointer" onClick={() => toggleCategory(category._id)}>
+                  <div className="flex flex-row-reverse justify-between items-center">
+                    <CardTitle className="text-lg font-extrabold flex items-center">
+                      <h2>{category.name}</h2>
+                    </CardTitle>
+                    <Button variant="ghost" size="sm" className="p-0 h-8 w-8">
+                      {isExpanded ? <LuChevronUp className="h-5 w-5" /> : <LuChevronDown className="h-5 w-5" />}
+                    </Button>
+                  </div>
+                </CardHeader>
+
+                {isExpanded && (
+                  <CardContent className="pt-0 pb-3 px-3">
+                    {categoryItems.length === 0 ? (
+                      <div dir="rtl" className="py-4 text-center text-sm">
+                        <p>آیتمی در این دسته‌بندی موجود نیست.</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {isAdmin && (
+                          <div className="flex flex-row-reverse justify-between items-center mb-2 text-sm">
+                            {isReordering === category._id ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setIsReordering(null)}
+                                className="text-sm"
+                              >
+                                <LuX className="w-4 h-4" />
+                                انصراف
+                              </Button>
+                            ) : categoryItems.length > 1 ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setIsReordering(category._id)}
+                                disabled={isReordering !== null}
+                                className="text-sm"
+                              >
+                                <LuListStart className="h-5 w-5" />
+                                <p>تغییر ترتیب لیست</p>
+                              </Button>
+                            ) : null}
+                          </div>
+                        )}
+
+                        {isReordering === category._id && isAdmin ? (
+                          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                            <SortableContext
+                              items={categoryItems.map((item) => item._id as string)}
+                              strategy={verticalListSortingStrategy}
+                            >
+                              {categoryItems.map((item) => (
+                                <SortableMenuItem
+                                  key={item._id}
+                                  item={item}
+                                  category={category}
+                                  onEdit={handleEditClick}
+                                  onDelete={handleDeleteClick}
+                                />
+                              ))}
+                            </SortableContext>
+                          </DndContext>
+                        ) : (
+                          <div className="space-y-3">
+                            {categoryItems.map((item) => {
+                              if (editingId === item._id && isAdmin) return (
+                                <Card key={item._id} className="overflow-hidden">
+                                  <CardContent className="p-0">
+                                    <form onSubmit={handleUpdateSubmit} className="p-4 space-y-4">
+                                      <div dir="rtl" className="grid gap-4 sm:grid-cols-2">
+                                        <div>
+                                          <Input
+                                            placeholder="عنوان آیتم"
+                                            value={editForm.name}
+                                            onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                                            required
+                                          />
+                                        </div>
+                                        <div>
+                                          <Input
+                                            placeholder="توضیحات"
+                                            value={editForm.description}
+                                            onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                                          />
+                                        </div>
+                                        <div>
+                                            <Input
+                                                placeholder="قیمت"
+                                                type="number"
+                                                step="1"
+                                                min="0"
+                                                value={editForm.price || 0}
+                                                onChange={(e) => setEditForm({ ...editForm, price: Number(e.target.value) })}
+                                            />
+                                        </div>
+                                        <div>
+                                          <Select
+                                            value={editForm.categoryId}
+                                            onValueChange={(value) => setEditForm({ ...editForm, categoryId: value })}
+                                            required
+                                          >
+                                            <SelectTrigger>
+                                              <SelectValue placeholder="انتخاب دسته‌بندی" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              {categories.map((category) => (
+                                                <SelectItem key={category._id} value={category._id}>
+                                                  {category.name}
+                                                </SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
+                                      </div>
+                                      <div className="flex flex-row-reverse justify-end gap-2">
+                                        <Button type="submit" size="sm">
+                                          <LuSave className="w-4 h-4" />
+                                          ذخیره
+                                        </Button>
+                                        <Button type="button" variant="secondary" size="sm" onClick={() => setEditingId("")}>
+                                          <LuX className="w-4 h-4" />
+                                          لغو
+                                        </Button>
+                                      </div>
+                                    </form>
+                                  </CardContent>
+                                </Card>
+                              ); else return (
+                                <Card key={item._id} className="overflow-hidden bg-white text-indigo">
+                                  <CardContent className="p-0">
+                                    <div className="p-4 flex flex-row-reverse gap-2 items-center">
+                                      <div className="flex flex-col justify-between items-center gap-2">
+                                        <AvailabilityToggle 
+                                              itemId={item._id || ""}
+                                              itemName={item.name}
+                                              item={item}
+                                              initialAvailable={item.available}
+                                            />
+                                      </div>
+                                      <div className="flex flex-col w-full gap-2">
+                                        <div className="flex flex-row-reverse justify-between">
+                                          <div className="flex flex-row-reverse gap-1 items-center">
+                                            <p className="font-semibold">{item.name}</p>
+                                          </div>
+                                          <p className="text-base font-semibold">{formatCurrency(item.price)}</p>
+                                          
+                                        </div>
+                                        {item.description && (
+                                          <span className="text-sm">{item.description}</span>
+                                        )}
+                                          <div className="flex flex-row-reverse justify-end gap-2">
+                                            {isAdmin && (
+                                              <>
+                                                <Button 
+                                                  variant="secondary" 
+                                                  size="sm" 
+                                                  onClick={() => handleEditClick(item)}>
+                                                  <MdEdit className="w-4 h-4" />
+                                                  <span className="sr-only">ویرایش</span>
+                                                </Button>
+                                                <Button 
+                                                  variant="destructive" 
+                                                  size="sm" 
+                                                  onClick={() => handleDeleteClick(item._id, item.name)}>
+                                                  <LuTrash2 className="w-4 h-4" />
+                                                  <span className="sr-only">حذف</span>
+                                                </Button>
+                                              </>
+                                            )}
+                                          </div>
+                                      </div>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              )}
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                )}
+              </Card>
+            )
+          })
+        )}
+      </div>
+    </div>
+  )
+}
