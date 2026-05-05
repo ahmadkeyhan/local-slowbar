@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 export async function getCategories() {
   try {
     await connectToDatabase();
-    const categories = await Category.find().sort({ order: 1, name: 1 });
+    const categories = await Category.find();
     return JSON.parse(JSON.stringify(categories));
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -23,7 +23,7 @@ export async function getCategories() {
 export async function getItemsGroupedByCategories() {
   try {
     await connectToDatabase()
-    const categories = await Category.find().sort({ order: 1, name: 1 })
+    const categories = await Category.find();
     const items = await MenuItem.find({ available: true }).populate("categoryIds", "name")
 
     const grouped: { [categoryId: string]: any[] } = {}
