@@ -54,20 +54,20 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md text-white bg-indigo">
-        <CardHeader className="space-y-1 flex flex-col items-center">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-24">
+      <Card className="w-full max-w-md bg-indigo">
+        <CardHeader className="space-y-1 flex flex-col items-center text-peach pb-2">
+          <div className="flex items-center gap-4 mb-2">
+            <div className="w-24 bg-peach rounded-full p-1">
               <Image
-                src={"/localPeach.png"}
+                src={"/octo.png"}
                 alt="لوگوی محلی"
-                width={609}
+                width={340}
                 height={340}
                 />
             </div>
           </div>
           <CardTitle className="text-xl">ورود به پنل</CardTitle>
-          <CardDescription className="text-center">برای دسترسی به داشبورد مدیریت، نام کاربری و رمز عبور خود را وارد کنید.</CardDescription>
+          <CardDescription className="text-center px-4">برای دسترسی به داشبورد مدیریت، نام کاربری و رمز عبور خود را وارد کنید.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
