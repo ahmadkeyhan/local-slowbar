@@ -342,8 +342,8 @@ export default function MenuItemManager({ isAdmin = true }) {
   return (
     <div className="space-y-6">
       {isAdmin && (
-        <form onSubmit={handleCreateSubmit} className="space-y-4 p-4 bg-indigo text-white rounded-xl">
-          <div dir="rtl" className="flex justify-between items-center pl-2">
+        <form onSubmit={handleCreateSubmit} className="space-y-4 p-4 bg-indigo rounded-xl">
+          <div dir="rtl" className="flex justify-between items-center text-white pl-2">
             <h3 className="font-extrabold">افزودن آیتم‌ جدید</h3>
           </div>
           <div dir="rtl" className="grid gap-4 sm:grid-cols-2">
@@ -412,7 +412,7 @@ export default function MenuItemManager({ isAdmin = true }) {
             const isExpanded = expandedCategories.has(category._id)
 
             return (
-              <Card key={category._id} className="overflow-hidden">
+              <Card key={category._id} className="overflow-hidden bg-blue">
                 <CardHeader className="py-3 px-4 cursor-pointer" onClick={() => toggleCategory(category._id)}>
                   <div className="flex flex-row-reverse justify-between items-center">
                     <CardTitle className="text-lg font-extrabold flex items-center">
@@ -480,7 +480,7 @@ export default function MenuItemManager({ isAdmin = true }) {
                           <div className="space-y-3">
                             {categoryItems.map((item) => {
                               if (editingId === item._id && isAdmin) return (
-                                <Card key={item._id} className="overflow-hidden">
+                                <Card key={item._id} className="overflow-hidden bg-indigo">
                                   <CardContent className="p-0">
                                     <form onSubmit={handleUpdateSubmit} className="p-4 space-y-4">
                                       <div dir="rtl" className="grid gap-4 sm:grid-cols-2">
@@ -545,28 +545,26 @@ export default function MenuItemManager({ isAdmin = true }) {
                                 <Card key={item._id} className="overflow-hidden bg-white text-indigo">
                                   <CardContent className="p-0">
                                     <div className="p-4 flex flex-row-reverse gap-2 items-center">
-                                      <div className="flex flex-col justify-between items-center gap-2">
-                                        <AvailabilityToggle 
-                                              itemId={item._id || ""}
-                                              itemName={item.name}
-                                              item={item}
-                                              initialAvailable={item.available}
-                                            />
-                                      </div>
                                       <div className="flex flex-col w-full gap-2">
                                         <div className="flex flex-row-reverse justify-between">
                                           <div className="flex flex-row-reverse gap-1 items-center">
-                                            <p className="font-semibold">{item.name}</p>
+                                            <p>{item.name}</p>
                                           </div>
-                                          <p className="text-base font-semibold">{formatCurrency(item.price)}</p>
+                                          <p className="text-base text-orange">{formatCurrency(item.price)}</p>
                                           
                                         </div>
                                         {item.description && (
                                           <span className="text-sm">{item.description}</span>
                                         )}
-                                          <div className="flex flex-row-reverse justify-end gap-2">
+                                          <div className="flex flex-row-reverse justify-between">
+                                            <AvailabilityToggle 
+                                                itemId={item._id || ""}
+                                                itemName={item.name}
+                                                item={item}
+                                                initialAvailable={item.available}
+                                            />
                                             {isAdmin && (
-                                              <>
+                                              <div className="flex flex-row-reverse gap-3">
                                                 <Button 
                                                   variant="secondary" 
                                                   size="sm" 
@@ -581,7 +579,7 @@ export default function MenuItemManager({ isAdmin = true }) {
                                                   <LuTrash2 className="w-4 h-4" />
                                                   <span className="sr-only">حذف</span>
                                                 </Button>
-                                              </>
+                                              </div>
                                             )}
                                           </div>
                                       </div>

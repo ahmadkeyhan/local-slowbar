@@ -8,7 +8,7 @@ const buttonVariants = cva(
       variants: {
         variant: {
           default: "bg-blue hover:bg-orange",
-          destructive: "text-rose-400 bg-white hover:text-white hover:bg-rose-400",
+          destructive: "text-red-400 bg-white border border-red-400 hover:text-white hover:bg-red-400",
           outline: "border border-indigo hover:bg-accent hover:text-accent-foreground",
           secondary: "bg-peach hover:bg-white",
           ghost: "hover:bg-accent hover:text-accent-foreground", // Ghost has no background until hovered
@@ -16,7 +16,7 @@ const buttonVariants = cva(
         },
         size: {
           default: "h-10 py-2 px-4",
-          sm: "h-9 px-3 rounded-md",
+          sm: "p-2 rounded-md h-9 min-w-9",
           lg: "h-11 px-8 rounded-md",
           icon: "h-10 w-10 p-0", // Icon size is square with no padding
         },
