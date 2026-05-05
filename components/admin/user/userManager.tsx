@@ -147,8 +147,8 @@ export default function UserManager() {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleCreateSubmit} className="space-y-4 p-4 bg-indigo text-white  rounded-xl">
-        <h3 className="font-extrabold">
+      <form onSubmit={handleCreateSubmit} className="space-y-4 p-4 bg-indigo rounded-xl">
+        <h3 className="text-white">
           افزودن کارمند جدید
         </h3>
         <div dir="rtl" className="grid gap-4 sm:grid-cols-2">
@@ -222,11 +222,11 @@ export default function UserManager() {
                 </CardContent>
               </Card>
             ) : (
-              <Card key={user._id} className="overflow-hidden mb-3 bg-indigo text-white">
+              <Card key={user._id} className="overflow-hidden mb-3 bg-indigo">
                 <CardContent className="p-0">
                   <div className="pl-2 p-3 flex flex-row-reverse justify-between items-center">
                     <div>
-                      <h3 className="font-extrabold">{user.name}</h3>
+                      <h3 className="text-white">{user.name}</h3>
                     </div>
                     <div className="flex flex-row-reverse gap-2">
                       <Button 
@@ -241,6 +241,7 @@ export default function UserManager() {
                         variant="destructive"
                         size="sm"
                         onClick={() => handleDeleteClick(user._id, user.name)}
+                        className="border-0"
                       >
                         <LuTrash2 className="w-4 h-4" />
                         <span className="sr-only">Delete</span>

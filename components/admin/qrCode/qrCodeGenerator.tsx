@@ -151,7 +151,7 @@ export default function QRCodeGenerator() {
 
   return (
     <div dir="rtl" className="grid gap-6 md:grid-cols-2">
-      <Card>
+      <Card className="bg-blue">
         <CardContent className="pt-6">
             <div dir="rtl" className="grid gap-8 grid-cols-2">
                 <div className="flex flex-col gap-2 col-span-2 sm:col-span-1">

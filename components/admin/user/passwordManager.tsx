@@ -73,11 +73,11 @@ export default function PasswordManager() {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-indigo text-white  rounded-xl">
-          <h3 className="font-extrabold">تغییر کلمه‌ی عبور</h3>
+      <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-indigo rounded-xl">
+          <h3 className="text-white">تغییر کلمه‌ی عبور</h3>
           <div dir="rtl" className="grid gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2 flex flex-col gap-4">
-              <Label htmlFor="current-password">کلمه‌ی عبور فعلی</Label>
+              <Label htmlFor="current-password" className="text-white">کلمه‌ی عبور فعلی</Label>
               <Input
                 id="current-password"
                 type="password"
@@ -87,7 +87,7 @@ export default function PasswordManager() {
               />
             </div>
             <div className="sm:col-span-2 flex flex-col gap-4">
-              <Label htmlFor="new-password">کلمه‌ی عبور جدید</Label>
+              <Label htmlFor="new-password" className="text-white">کلمه‌ی عبور جدید</Label>
               <Input
                 id="new-password"
                 type="password"
@@ -97,7 +97,7 @@ export default function PasswordManager() {
               />
             </div>
             <div className="sm:col-span-2 flex flex-col gap-4">
-              <Label htmlFor="confirm-password">تأیید کلمه‌ی عبور جدید</Label>
+              <Label htmlFor="confirm-password" className="text-white">تأیید کلمه‌ی عبور جدید</Label>
               <Input
                 id="confirm-password"
                 type="password"
