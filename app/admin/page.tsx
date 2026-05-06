@@ -33,7 +33,7 @@ export default function AdminPage() {
   const isEmployee = session?.user?.role === "employee";
 
   return (
-    <main className="min-h-screen bg-peach/20">
+    <main className="min-h-screen">
       <div className="container px-4 py-6 mx-auto max-w-6xl">
         <Tabs
           defaultValue="items"
