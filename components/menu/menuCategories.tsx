@@ -355,6 +355,25 @@ export default function MenuCategories() {
                  </div>
                 )
               }
+              //daily
+              if (category._id == "69fba732ebfa0e0f6ecc4f47" && items.length > 0) {
+                return (
+                  <div key={category._id} className="absolute top-[597vw] right-[10vw] w-[31vw] space-y-[0.6vw]">
+                    <h2 className="text-[4.5vw] text-left mb-[3vw]">{category.name}</h2>
+                    {items.map((item: Item) => {
+                      return (
+                        <div key={item._id} className={`flex justify-between text-[3.8vw] ${item.available? "" : " line-through"}`}>
+                          <div>
+                            <p>{item.name}</p>
+                            {item.description && <p className="text-[3vw]">{item.description}</p>}
+                          </div>
+                          <p className="text-orange">{formatCurrency(item.price)}</p>
+                        </div>
+                      )
+                    })}
+                 </div>
+                )
+              }
             })
           }
         </div>
