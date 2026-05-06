@@ -70,11 +70,8 @@ export default function MenuCategories() {
           </div>
         </div> :
         <div className="flex flex-col relative">
-          <div className="w-full aspect-1080/1842 relative">
+          <div className="w-full aspect-1080/2340 relative">
             <Image src="/menu1.jpg" fill alt="پس زمینه منو" />
-          </div>
-          <div className="w-full aspect-1080/498 relative">
-            <Image src="/menu2.jpg" fill alt="پس زمینه منو" />
           </div>
           <div className="w-full aspect-1080/532 relative">
             <Image src="/menu3.jpg" fill alt="پس زمینه منو" />
@@ -230,9 +227,9 @@ export default function MenuCategories() {
               //cold bar
               if (category._id == "69f9e427024e37a42754636f") {
                 return (
-                  <div key={category._id} className="absolute top-[322vw] right-[13vw] w-[78vw] flex gap-[4vw]">
-                    <div className="space-y-[0.6vw] w-[28vw]">
-                      <h2 className="text-[4.5vw] mr-[-3vw]">{category.name}</h2>
+                  <div key={category._id} className="absolute top-[322vw] right-[8vw] w-[84vw] flex gap-[4vw]">
+                    <div className="space-y-[0.6vw] w-[40vw]">
+                      <h2 className="text-[4.5vw]">{category.name}</h2>
                       {items.filter((item,index) => index<3).map((item: Item) => {
                         return (
                           <div key={item._id} className={`flex justify-between text-[3.8vw] ${item.available? "" : " line-through"}`}>
