@@ -65,7 +65,7 @@ export default function MenuCategories() {
     <div className="space-y-2 min-h-screen pb-4">
       {isLoading? 
         <div className="w-full aspect-square flex justify-center items-center">
-          <div className="relative w-27 aspect-square animate-[bounce_3s_ease-in-out_infinite] duration-400">
+          <div className="relative w-27 aspect-square animate-[bounce_3s_ease-in-out_infinite]">
             <Image src="/octo.png" alt="لودینگ اختاپوس" fill />
           </div>
         </div> :

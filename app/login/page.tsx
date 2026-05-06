@@ -56,13 +56,12 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-md bg-indigo">
         <CardHeader className="space-y-1 flex flex-col items-center text-peach pb-2">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="w-24 bg-peach rounded-full p-1">
+          <div className="flex items-center gap-4 mb-2 aspect-square bg-peach p-4 pb-0 rounded-full">
+            <div className="relative w-20 aspect-square animate-[bounce_3s_ease-in-out_infinite]">
               <Image
                 src={"/octo.png"}
                 alt="لوگوی محلی"
-                width={340}
-                height={340}
+                fill
                 />
             </div>
           </div>
@@ -72,7 +71,7 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex flex-col gap-2">
-              <Label htmlFor="name">نام کاربری</Label>
+              <Label htmlFor="name" className="text-white">نام کاربری</Label>
               <Input
                 id="name"
                 type="text"
@@ -83,7 +82,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="password">رمز عبور</Label>
+              <Label htmlFor="password" className="text-white">رمز عبور</Label>
               <Input
                 id="password"
                 type="password"
