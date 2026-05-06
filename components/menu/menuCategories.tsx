@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { getCategories } from "@/lib/data/categoryData";
 import { getAllCategoryItems } from "@/lib/data/itemData";
 import Image from "next/image";
@@ -26,23 +25,13 @@ interface CategoryItems {
   [key : string] : Item[]
 }
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.3 },
-  },
-};
-
 export default function MenuCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoryItems, setCategoryItems] = useState<CategoryItems>({})
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadCategories = async () => {
-      setIsLoading(true)
       const data = await getCategories();
       setCategories(data);
       const loadPromises = data.map(async (category: Category) => {
@@ -74,7 +63,12 @@ export default function MenuCategories() {
   // Items view with sticky badge row
   return (
     <div className="space-y-2 min-h-screen pb-4">
-      {isLoading? <p>loading</p> :
+      {isLoading? 
+        <div className="w-full aspect-square flex justify-center items-center">
+          <div className="relative w-27 aspect-square animate-[bounce_3s_ease-in-out_infinite] duration-400">
+            <Image src="/octo.png" alt="لودینگ اختاپوس" fill />
+          </div>
+        </div> :
         <div className="flex flex-col relative">
           <div className="w-full aspect-1080/1842 relative">
             <Image src="/menu1.jpg" fill alt="پس زمینه منو" />
