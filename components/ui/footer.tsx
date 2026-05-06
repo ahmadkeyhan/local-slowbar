@@ -22,7 +22,7 @@ export default function Footer() {
                     </div>
                     {/* <h1 className="text-lg text-peach">کافه رستوران ویکـــند</h1> */}
                 </Link>
-                <Link href="https://www.instagram.com/wkndcafe.ir?igsh=ZDF4ZjEzcXdjOHA2" target="_blank" rel="noopener noreferrer" className="my-6">
+                <Link href="https://www.instagram.com/local.slow.barz?igsh=ZDF4ZjEzcXdjOHA2" target="_blank" rel="noopener noreferrer" className="my-6">
                     <Button variant="secondary">
                         اینستاگرام
                         <LuInstagram className="w-5 h-5"/>
@@ -37,7 +37,7 @@ export default function Footer() {
                 </div>
                 <p className="text-white text-sm inline text-center">
                     <span><LuMapPin className="w-4 h-4 inline ml-1" /></span>
-                    تبریز/ ولیعصر/ خیابان فروغی/ خیابان قطران
+                    تبریز/ شاهگلی
                 </p>
             </div> */}
             <div className="flex sm:col-span-2 justify-center items-center gap-2 text-sm text-peach py-2">
