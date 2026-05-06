@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getCategories } from "@/lib/data/categoryData";
-import { getAllCategoryItems } from "@/lib/data/itemData";
+import { getCategoryItems } from "@/lib/data/itemData";
 import Image from "next/image";
 import { formatCurrency } from "@/lib/utils";
 
@@ -37,7 +37,7 @@ export default function MenuCategories() {
       const loadPromises = data.map(async (category: Category) => {
         const categoryId = category._id
         try {
-          const items = await getAllCategoryItems(categoryId)
+          const items = await getCategoryItems(categoryId)
           return {categoryId, items}
         } catch (error) {
           console.error(`Error loading items for category ${categoryId}:`, error)
