@@ -17,15 +17,9 @@ export async function proxy(request: NextRequest) {
     // Redirect to login if not authenticated
     if (!token) {
       const url = new URL("/login", request.url)
-      url.searchParams.set("callbackUrl", encodeURI(request.url))
+      url.searchParams.set("callbackUrl", encodeURI(request.nextUrl.pathname + request.nextUrl.search))
       return NextResponse.redirect(url)
     }
-
-    // Check if user has admin role (optional)
-    // if (token.role !== "admin") {
-    //   // Redirect to unauthorized page or home
-    //   return NextResponse.redirect(new URL("/", request.url))
-    // }
   }
 
   return NextResponse.next()

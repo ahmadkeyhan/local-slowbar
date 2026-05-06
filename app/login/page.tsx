@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/toastContext"
+import { useSearchParams } from "next/navigation"
 
 export default function LoginPage() {
   const [name, setName] = useState("")
@@ -19,6 +20,8 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get("callbackUrl") || "/admin"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,7 +41,7 @@ export default function LoginPage() {
           variant: "destructive",
         })
       } else {
-        router.push("/admin")
+        router.push(callbackUrl)
         router.refresh()
       }
     } catch (error: any) {
