@@ -9,6 +9,7 @@ import MenuItemManager from "@/components/admin/menuItem/menuItemManager";
 import PasswordManager from "@/components/admin/user/passwordManager";
 import UserManager from "@/components/admin/user/userManager";
 import QRCodeGenerator from "@/components/admin/qrCode/qrCodeGenerator";
+import CustomerManager from "@/components/admin/customer/customerManager";
 
 export default function AdminPage() {
   const { data: session, status } = useSession();
@@ -62,6 +63,14 @@ export default function AdminPage() {
                 کیوآر
               </TabsTrigger>
             )}
+            {isAdmin && (
+              <TabsTrigger
+                value="customers"
+                className="grow px-2 lg:grow-0 lg:justify-end lg:w-full lg:mb-1"
+              >
+                مشتریان
+              </TabsTrigger>
+            )}
           </TabsList>
           <div className="flex-1">
             <TabsContent
@@ -101,6 +110,20 @@ export default function AdminPage() {
                 </h1>
                 <Suspense fallback={<QRCodeSkeleton />}>
                   <QRCodeGenerator />
+                </Suspense>
+              </TabsContent>
+            )}
+
+            {isAdmin && (
+              <TabsContent
+                value="customers"
+                className="space-y-6 data-[state=active]:block"
+              >
+                <h1 className="text-xl font-bold text-center lg:text-end ">
+                 مدیریت مشتریان
+                </h1>
+                <Suspense fallback={<QRCodeSkeleton />}>
+                  <CustomerManager />
                 </Suspense>
               </TabsContent>
             )}
