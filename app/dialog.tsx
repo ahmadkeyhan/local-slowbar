@@ -36,7 +36,7 @@ export default function ClubDialog() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-125 rounded-lg overflow-hidden p-0 bg-transparent">
+      <DialogContent className="p-0 bg-transparent">
 
         <div className="p-0 pr-6 space-y-2 relative">
             <div className="relative w-full aspect-780/741 overflow-hidden">
@@ -48,16 +48,16 @@ export default function ClubDialog() {
                 className="object-cover"
               />
             </div>
-            <form onSubmit={handleCreateSubmit} className="space-y-2 p-4 rounded-xl absolute top-6 left-[8vw] w-[80vw]">
+            <form onSubmit={handleCreateSubmit} className="space-y-2 p-[4vw] rounded-xl absolute top-[6vw] left-[8vw] w-[80vw]">
                 <div>
                     <DialogTitle>
                         همراه عزیز لوکال
                     </DialogTitle>
-                    <DialogDescription className="text-base mt-5">
+                    <DialogDescription className="text-[4vw] mt-[8vw]">
                          مکان کافه قراره عوض بشه! شماره‌تو این زیر برامون بنویس تا از محل جدید کافه و اتفاقای دیگه باخبر بشی!
                     </DialogDescription>
                 </div>
-                <div dir="rtl" className="grid gap-2 sm:grid-cols-2">
+                <div dir="rtl" className="grid gap-2">
                     <div>
                         <Input
                             placeholder="نام(اختیاری)"
