@@ -1,11 +1,15 @@
 import MenuCategories from "@/components/menu/menuCategories";
 import { motion, AnimatePresence } from "framer-motion";
 import { LuLoader } from "react-icons/lu";
+import ClubDialog from "./dialog";
 
 export default async function Home() {
 
   return (
-    <MenuCategories />
+    <>
+      <MenuCategories />
+      <ClubDialog />
+    </>
   );
 }
 
